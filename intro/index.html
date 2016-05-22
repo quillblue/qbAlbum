@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8">
-	<title>qbAlbum Demos</title>
+	<title>Quillblue Album(qbAlbum)</title>
 	<link rel="stylesheet" type="text/css" href="../source/css/qbAlbum.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="css/readme.css">
@@ -29,11 +29,10 @@
 				<div class="row">
 					Temporary Unavaliable. You can use command in console to change the setting before it's implemented.
 				</div>
-				<!--
 				<div class="row">
 					<div class="col-md-6"><label>Select a layout</label></div>
 					<div class="col-md-6">
-					<select class="form-control">
+					<select id="layout" class="form-control">
 						<option value="1">Puzzle</option>
 						<option value="2">Waterfall</option>
 						<option value="3">Bucket</option>
@@ -45,10 +44,10 @@
 						<label>Gutter</label>
 					</div>
 					<div class="col-md-3">
-						<input class="form-control" placeholder="x">
+						<input class="form-control" placeholder="x" id="gutterX">
 					</div>
 					<div class="col-md-3">
-						<input class="form-control" placeholder="y">
+						<input class="form-control" placeholder="y" id="gutterY">
 					</div>
 				</div>
 				<div class="row">
@@ -56,7 +55,7 @@
 						<label>Waterfall Columns</label>
 					</div>
 					<div class="col-md-4">
-						<input class="form-control" value="4">
+						<input class="form-control" value="4" id="waterfallColumns">
 					</div>
 				</div>
 				<div class="row">
@@ -64,12 +63,12 @@
 						<label>Bucket MinHeight</label>
 					</div>
 					<div class="col-md-4">
-						<input class="form-control" value="150">
+						<input class="form-control" value="150" id="bucketMinHeight">
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<input type="checkbox"> Enable Full Screen View
+						<input type="checkbox" id="fullScreenViewEnabled"> Enable Full Screen View
 					</div>
 				</div>
 				<div class="row">
@@ -90,7 +89,7 @@
 						<button class="btn btn-primary">Add</button>
 					</div>
 				</div>
-				<div class="row">
+				<!--<div class="row">
 					<div class="col-md-6">
 						<label>Delete image(s)</label>
 					</div>
@@ -100,7 +99,7 @@
 					<div class="col-md-2">
 						<button class="btn btn-primary">Delete</button>
 					</div>
-				</div>-->			
+				</div>	-->	
 			</div>
 		</div>
 

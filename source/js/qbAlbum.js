@@ -5,13 +5,13 @@
         this.LAYOUT = {
             PUZZLE: 1,    
             WATERFALL: 2,
-            BARREL: 3
+            BUCKET: 3
         };
     }
 
     function qbAlbumObj() {
         this.settings={
-            layout:2,
+            layout:3,
             waterfallColumn:4,
             bucketMinHeight:150,
             gutter:[16,16],
@@ -65,6 +65,7 @@
 
         }
         else{
+            this.imgList=[]
             this.addImage(image)
         }
     };
@@ -97,10 +98,10 @@
         }
         else{
             if(this.settings.layout==2){
-                WaterallImageInsert(this,image)
+                waterfallImageInsert(this,image)
             }
             else{
-
+                bucketImageInsert(this,image)
             }
         }
     };
@@ -128,12 +129,13 @@
             return;
         }
         this.container.innerHTML=''
+        this.container.style.display='block'
         if(layout==1){
 
         }
         else{
-            if(this.settings.layout==2){
-                this.container.classList.add('waterfall-album')
+            if(layout==2){
+                this.container.style.display='flex'
                 this.columnHeight=new Array(this.settings.waterfallColumn)
                 for(var i=0;i<this.settings.waterfallColumn;i++){
                     var columnDom=document.createElement('div')
@@ -150,10 +152,16 @@
                 }
             }
             else{
-
+                this.currentSpaceLeft=this.container.clientWidth
+                this.currentRow=document.createElement('div')
+                this.currentRow.classList.add('bucket-row')
+                this.currentRow.style.marginBottom=this.settings.gutter[1]+'px'
+                this.currentRow.style.height=this.settings.bucketMinHeight+'px'
+                this.container.appendChild(this.currentRow)
             }
         }
         this.settings.layout=layout
+        this.setImage(this.imgList)
     };
 
 
@@ -177,7 +185,7 @@
             console.error('Gutter is invalid')
         }
         this.settings.gutter=[x,y]
-        this.setLayout()
+        this.setLayout(this.settings.layout)
     };
 
     /**
@@ -211,6 +219,52 @@
 
     };
 
+    qbAlbumObj.prototype.bucketImageInsert=function(imgList,index){
+        if(!index){index=0}
+        if(index>=imgList.length){return;}
+        var pic=new Image()
+        pic.src=imgList[index]
+        var that=this
+        var set=setInterval(function(){
+            //If Got the width or height from server, deal with image inserting
+            if(pic.width>0||pic.height>0){
+                if(that.currentSpaceLeft-pic.width*that.settings.bucketMinHeight/pic.height<0){
+                    //This row is full, will wrap it up and set up another
+                    that.currentRow.style.height=that.settings.bucketMinHeight/(that.container.clientWidth-albumObj.currentSpaceLeft)*albumObj.container.clientWidth+'px'
+                    that.currentRow=document.createElement('div')
+                    that.currentRow.classList.add('bucket-row')
+                    that.currentRow.style.height=that.settings.bucketMinHeight+'px'
+                    that.currentRow.style.marginBottom=that.settings.gutter[1]+'px'
+                    that.container.appendChild(that.currentRow)
+                    that.currentSpaceLeft=that.container.clientWidth
+                }
+                //Add the image to this row and recalculate the space left
+                var picContainer=document.createElement('div')
+                picContainer.classList.add('bucket-item')
+                var picDom=document.createElement('img')
+                picDom.src=imgList[index]
+                picDom.addEventListener('click',function(){
+                    if(that.settings.enableFullscreen){
+                        var shadowMask=document.getElementById('shadowMask')
+                        shadowMask.style.display='flex'
+                        shadowMask.innerHTML='<img src="'+this.src+'" />'
+                        shadowMask.addEventListener('click',function(){
+                            this.style.display='none'
+                        })
+                    }
+                })
+                picContainer.appendChild(picDom)
+                that.currentRow.appendChild(picContainer)
+                that.currentSpaceLeft-=pic.width*that.settings.bucketMinHeight/pic.height
+
+                clearInterval(set)
+                index++
+                that.bucketImageInsert(imgList,index)
+            }
+        },40)
+    }
+  
+
     //Private functions here
     var puzzleSize=function(){
         var sizes=[]
@@ -232,7 +286,7 @@
         return sizes;
     }
 
-    var WaterallImageInsert=function(albumObj,imgList,index){
+    var waterfallImageInsert=function(albumObj,imgList,index){
         //Load Image
         if(!index){index=0}
         if(index>=imgList.length){return;}
@@ -264,11 +318,57 @@
 
                 clearInterval(set)
                 index++
-                WaterallImageInsert(albumObj,imgList,index)
+                waterfallImageInsert(albumObj,imgList,index)
+            }
+        },40)
+    }
+
+    var bucketImageInsert=function(albumObj,imgList,index){
+        if(!index){index=0}
+        if(index>=imgList.length){return;}
+        var pic=new Image()
+        pic.src=imgList[index]
+        var set=setInterval(function(){
+            //If Got the width or height from server, deal with image inserting
+            if(pic.width>0||pic.height>0){
+                if(albumObj.currentSpaceLeft-pic.width*albumObj.settings.bucketMinHeight/pic.height<0){
+                    //This row is full, will wrap it up and set up another
+                    albumObj.currentRow.style.height=albumObj.settings.bucketMinHeight/(albumObj.container.clientWidth-albumObj.currentSpaceLeft)*albumObj.container.clientWidth+'px'
+                    albumObj.currentRow=document.createElement('div')
+                    albumObj.currentRow.classList.add('bucket-row')
+                    albumObj.currentRow.style.height=albumObj.settings.bucketMinHeight+'px'
+                    albumObj.currentRow.style.marginBottom=albumObj.settings.gutter[1]+'px'
+                    albumObj.container.appendChild(albumObj.currentRow)
+                    albumObj.currentSpaceLeft=albumObj.container.clientWidth
+                }
+                //Add the image to this row and recalculate the space left
+                var picContainer=document.createElement('div')
+                picContainer.classList.add('bucket-item')
+                var picDom=document.createElement('img')
+                picDom.src=imgList[index]
+                picDom.addEventListener('click',function(){
+                    if(albumObj.settings.enableFullscreen){
+                        var shadowMask=document.getElementById('shadowMask')
+                        shadowMask.style.display='flex'
+                        shadowMask.innerHTML='<img src="'+this.src+'" />'
+                        shadowMask.addEventListener('click',function(){
+                            this.style.display='none'
+                        })
+                    }
+                })
+                picContainer.appendChild(picDom)
+                albumObj.currentRow.appendChild(picContainer)
+                albumObj.currentSpaceLeft-=pic.width*albumObj.settings.bucketMinHeight/pic.height
+
+                clearInterval(set)
+                index++
+                bucketImageInsert(albumObj,imgList,index)
             }
         },40)
     }
   
+
+    
 
     /**
      * Get bucketMinHeight
