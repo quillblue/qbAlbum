@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>qbAlbum Demos</title>
+	<link rel="stylesheet" type="text/css" href="source/css/qbAlbum.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="css/readme.css">
+</head>
+<body>
+	<div class="container">
+		<h1>Quillblue Album</h1>
+		<hr>
+		<h2>Getting Started</h2>
+		<ol>
+			<li>Import <code>source/css/qbAlbum.css</code> and <code>source/js/qbAlbum.js</code> in your page</li>
+			<li>Init a new album by adding scripts below:
+			<pre>var albumObj=qbAlbum.init(contiainerDomId,[setting])</pre></li>
+			* Refer to APIs to learn the meaning of args
+		</ol>
+		
+		<h2>Demo</h2>
+		<div class="row">
+			<div class="col-md-9">
+				<div id="example"></div>
+			</div>
+			<div class="col-md-3">
+				<h3>Options</h3>
+				<div class="row">
+					Temporary Unavaliable. You can use command in console to change the setting before it's implemented.
+				</div>
+				<!--
+				<div class="row">
+					<div class="col-md-6"><label>Select a layout</label></div>
+					<div class="col-md-6">
+					<select class="form-control">
+						<option value="1">Puzzle</option>
+						<option value="2">Waterfall</option>
+						<option value="3">Bucket</option>
+					</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Gutter</label>
+					</div>
+					<div class="col-md-3">
+						<input class="form-control" placeholder="x">
+					</div>
+					<div class="col-md-3">
+						<input class="form-control" placeholder="y">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<label>Waterfall Columns</label>
+					</div>
+					<div class="col-md-4">
+						<input class="form-control" value="4">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8">
+						<label>Bucket MinHeight</label>
+					</div>
+					<div class="col-md-4">
+						<input class="form-control" value="150">
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<input type="checkbox"> Enable Full Screen View
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<button>Apply Updated Option to album</button>
+					</div>
+				</div>
+				<hr>
+				<h3>Operations</h3>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Add image(s)</label>
+					</div>
+					<div class="col-md-4">
+						<input class="form-control">
+					</div>
+					<div class="col-md-2">
+						<button class="btn btn-primary">Add</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6">
+						<label>Delete image(s)</label>
+					</div>
+					<div class="col-md-4">
+						<input class="form-control">
+					</div>
+					<div class="col-md-2">
+						<button class="btn btn-primary">Delete</button>
+					</div>
+				</div>-->			
+			</div>
+		</div>
+
+		<h3>API</h3>
+		To be updated here
+
+	</div>
+	<script type="text/javascript" src="source/js/qbAlbum.js"></script>
+	<script type="text/javascript">
+		var albumObj=qbAlbum.init('#example')
+		function loadImg(count){
+			var colors=['C23531','2F4554', '61A0A8', 'D48265', '91C7AE','749F83',  'CA8622', 'BDA29A','6E7074', '546570', 'C4CCD3']
+			var imgList=[]
+			for(var i=0;i<count;i++){
+				var color=colors[parseInt(Math.random()*10)]
+				var width=parseInt(Math.random()*40+20)*10
+				var height=parseInt(Math.random()*40+20)*10
+				imgList.push('http://placehold.it/'+width+'x'+height+'/'+color+'/fff')
+			}
+			return imgList
+		}
+		var imgList=loadImg(8)
+		albumObj.setImage(imgList)
+	</script>
+</body>
+</html>
