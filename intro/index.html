@@ -27,14 +27,11 @@
 			<div class="col-md-3">
 				<h3>Options</h3>
 				<div class="row">
-					Temporary Unavaliable. You can use command in console to change the setting before it's implemented.
-				</div>
-				<div class="row">
 					<div class="col-md-6"><label>Select a layout</label></div>
 					<div class="col-md-6">
 					<select id="layout" class="form-control">
 						<option value="1">Puzzle</option>
-						<option value="2">Waterfall</option>
+						<option value="2" selected="selected">Waterfall</option>
 						<option value="3">Bucket</option>
 					</select>
 					</div>
@@ -44,10 +41,10 @@
 						<label>Gutter</label>
 					</div>
 					<div class="col-md-3">
-						<input class="form-control" placeholder="x" id="gutterX">
+						<input class="form-control" placeholder="x" id="gutterX" value="16">
 					</div>
 					<div class="col-md-3">
-						<input class="form-control" placeholder="y" id="gutterY">
+						<input class="form-control" placeholder="y" id="gutterY" value="16">
 					</div>
 				</div>
 				<div class="row">
@@ -73,11 +70,14 @@
 				</div>
 				<div class="row">
 					<div class="col-md-12">
-						<button>Apply Updated Option to album</button>
+						<button class="btn btn-primary" id="btnUpdate">Apply Updated Option to album</button>
 					</div>
 				</div>
 				<hr>
 				<h3>Operations</h3>
+				<div class="row">
+					Temporary Unavaliable. You can use command in console to change the setting before it's implemented.
+				</div>
 				<div class="row">
 					<div class="col-md-6">
 						<label>Add image(s)</label>
@@ -123,6 +123,20 @@
 		}
 		var imgList=loadImg(8)
 		albumObj.setImage(imgList)
+		var btnUpdate=document.getElementById('btnUpdate')
+		btnUpdate.addEventListener('click',function(){
+			if(document.getElementById('fullScreenViewEnabled').checked){
+				albumObj.enableFullscreen()
+			}
+			else{
+				albumObj.disableFullscreen()
+			}
+			albumObj.setGutter(document.getElementById('gutterX').value,document.getElementById('gutterY').value)
+			albumObj.setWaterfallColumn(document.getElementById('waterfallColumns').value)
+			albumObj.setBucketMinHeight(document.getElementById('bucketMinHeight').value)
+			albumObj.setLayout(parseInt(document.getElementById('layout').value))
+			albumObj.refresh()
+		})
 	</script>
 </body>
 </html>

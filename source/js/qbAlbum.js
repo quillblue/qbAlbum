@@ -11,7 +11,7 @@
 
     function qbAlbumObj() {
         this.settings={
-            layout:3,
+            layout:2,
             waterfallColumn:4,
             bucketMinHeight:150,
             gutter:[16,16],
@@ -48,6 +48,14 @@
         document.querySelector('body').appendChild(shadowMask)
         albumObj.setLayout(albumObj.settings.layout)
         return albumObj
+    }
+
+    /**
+     * Refresh album
+     */
+    qbAlbumObj.prototype.refresh=function(){
+        this.setLayout(this.settings.Layout)
+        this.setImage(this.imgList)
     }
 
     /**
@@ -161,7 +169,6 @@
             }
         }
         this.settings.layout=layout
-        this.setImage(this.imgList)
     };
 
 
@@ -175,6 +182,26 @@
     };
 
     /**
+     * Set column number for waterfall album
+     * @param {number}  colNumber  Counts of columns in waterfall album
+     */
+    qbAlbumObj.prototype.setWaterfallColumn = function (count) {
+        if(!isNaN(parseInt(count)&&parseInt(count)>0)){
+            this.settings.waterfallColumn=parseInt(count)
+        }
+    };
+
+    /**
+     * Set minHeight of row for bucket album
+     * @param {number}  minHeight
+     */
+    qbAlbumObj.prototype.setBucketMinHeight = function (minHeight) {
+        if(!isNaN(parseFloat(minHeight)&&parseFloat(minHeight)>0)){
+            this.settings.bucketMinHeight=parseFloat(minHeight)
+        }
+    };
+
+    /**
      * Set margin between images
      * @param {number}  x  Horizontal margin between images
      * @param {number} [y] Vertical margin between images, same as x by default
@@ -185,7 +212,6 @@
             console.error('Gutter is invalid')
         }
         this.settings.gutter=[x,y]
-        this.setLayout(this.settings.layout)
     };
 
     /**
@@ -209,61 +235,6 @@
     qbAlbumObj.prototype.isFullscreenEnabled = function () {
         return this.settings.enableFullscreen;
     };
-
-    /**
-     * 设置木桶模式每行高度的上下限，单位像素
-     * @param {number} min 最小高度
-     * @param {number} max 最大高度
-     */
-    qbAlbumObj.prototype.setBarrelHeight = function (min, max) {
-
-    };
-
-    qbAlbumObj.prototype.bucketImageInsert=function(imgList,index){
-        if(!index){index=0}
-        if(index>=imgList.length){return;}
-        var pic=new Image()
-        pic.src=imgList[index]
-        var that=this
-        var set=setInterval(function(){
-            //If Got the width or height from server, deal with image inserting
-            if(pic.width>0||pic.height>0){
-                if(that.currentSpaceLeft-pic.width*that.settings.bucketMinHeight/pic.height<0){
-                    //This row is full, will wrap it up and set up another
-                    that.currentRow.style.height=that.settings.bucketMinHeight/(that.container.clientWidth-albumObj.currentSpaceLeft)*albumObj.container.clientWidth+'px'
-                    that.currentRow=document.createElement('div')
-                    that.currentRow.classList.add('bucket-row')
-                    that.currentRow.style.height=that.settings.bucketMinHeight+'px'
-                    that.currentRow.style.marginBottom=that.settings.gutter[1]+'px'
-                    that.container.appendChild(that.currentRow)
-                    that.currentSpaceLeft=that.container.clientWidth
-                }
-                //Add the image to this row and recalculate the space left
-                var picContainer=document.createElement('div')
-                picContainer.classList.add('bucket-item')
-                var picDom=document.createElement('img')
-                picDom.src=imgList[index]
-                picDom.addEventListener('click',function(){
-                    if(that.settings.enableFullscreen){
-                        var shadowMask=document.getElementById('shadowMask')
-                        shadowMask.style.display='flex'
-                        shadowMask.innerHTML='<img src="'+this.src+'" />'
-                        shadowMask.addEventListener('click',function(){
-                            this.style.display='none'
-                        })
-                    }
-                })
-                picContainer.appendChild(picDom)
-                that.currentRow.appendChild(picContainer)
-                that.currentSpaceLeft-=pic.width*that.settings.bucketMinHeight/pic.height
-
-                clearInterval(set)
-                index++
-                that.bucketImageInsert(imgList,index)
-            }
-        },40)
-    }
-  
 
     //Private functions here
     var puzzleSize=function(){
