@@ -30,8 +30,8 @@
 					<div class="col-md-6"><label>Select a layout</label></div>
 					<div class="col-md-6">
 					<select id="layout" class="form-control">
-						<option value="1">Puzzle</option>
-						<option value="2" selected="selected">Waterfall</option>
+						<option value="1" selected="selected">Puzzle</option>
+						<option value="2">Waterfall</option>
 						<option value="3">Bucket</option>
 					</select>
 					</div>
@@ -83,23 +83,23 @@
 						<label>Add image(s)</label>
 					</div>
 					<div class="col-md-4">
-						<input class="form-control">
+						<input class="form-control" id="inputAddCount" value="1">
 					</div>
 					<div class="col-md-2">
-						<button class="btn btn-primary">Add</button>
+						<button class="btn btn-primary" id="btnAdd">Add</button>
 					</div>
 				</div>
-				<!--<div class="row">
+				<div class="row">
 					<div class="col-md-6">
 						<label>Delete image(s)</label>
 					</div>
 					<div class="col-md-4">
-						<input class="form-control">
+						<input class="form-control" id="inputDelCount" value="1">
 					</div>
 					<div class="col-md-2">
-						<button class="btn btn-primary">Delete</button>
+						<button class="btn btn-primary" id="btnDelete">Delete</button>
 					</div>
-				</div>	-->	
+				</div>
 			</div>
 		</div>
 
@@ -108,35 +108,6 @@
 
 	</div>
 	<script type="text/javascript" src="../source/js/qbAlbum.js"></script>
-	<script type="text/javascript">
-		var albumObj=qbAlbum.init('#example')
-		function loadImg(count){
-			var colors=['C23531','2F4554', '61A0A8', 'D48265', '91C7AE','749F83',  'CA8622', 'BDA29A','6E7074', '546570', 'C4CCD3']
-			var imgList=[]
-			for(var i=0;i<count;i++){
-				var color=colors[parseInt(Math.random()*10)]
-				var width=parseInt(Math.random()*40+20)*10
-				var height=parseInt(Math.random()*40+20)*10
-				imgList.push('http://placehold.it/'+width+'x'+height+'/'+color+'/fff')
-			}
-			return imgList
-		}
-		var imgList=loadImg(8)
-		albumObj.setImage(imgList)
-		var btnUpdate=document.getElementById('btnUpdate')
-		btnUpdate.addEventListener('click',function(){
-			if(document.getElementById('fullScreenViewEnabled').checked){
-				albumObj.enableFullscreen()
-			}
-			else{
-				albumObj.disableFullscreen()
-			}
-			albumObj.setGutter(document.getElementById('gutterX').value,document.getElementById('gutterY').value)
-			albumObj.setWaterfallColumn(document.getElementById('waterfallColumns').value)
-			albumObj.setBucketMinHeight(document.getElementById('bucketMinHeight').value)
-			albumObj.setLayout(parseInt(document.getElementById('layout').value))
-			albumObj.refresh()
-		})
-	</script>
+	<script type="text/javascript" src="js/intro.js"></script>
 </body>
 </html>

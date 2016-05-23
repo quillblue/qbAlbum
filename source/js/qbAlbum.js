@@ -2,16 +2,11 @@
 
     'use strict';
     function qbAlbum(){
-        this.LAYOUT = {
-            PUZZLE: 1,    
-            WATERFALL: 2,
-            BUCKET: 3
-        };
     }
 
     function qbAlbumObj() {
         this.settings={
-            layout:2,
+            layout:1,
             waterfallColumn:4,
             bucketMinHeight:150,
             gutter:[16,16],
@@ -28,6 +23,7 @@
     qbAlbum.prototype.init=function(container,option){
         var albumObj=new qbAlbumObj();
         albumObj.container=document.querySelector(container)
+        albumObj.container.classList.add('album')
         if(option!==undefined){
             if(option.waterfallColumn&&!isNaN(parseInt(waterfallColumn))){
                 albumObj.settings.waterfallColumn=option.waterfallColumn;
@@ -47,6 +43,9 @@
         shadowMask.id='shadowMask'
         document.querySelector('body').appendChild(shadowMask)
         albumObj.setLayout(albumObj.settings.layout)
+        window.addEventListener('resize',function(){
+            if(albumObj.settings.layout==1){puzzleImgResize(albumObj,true)}
+        })
         return albumObj
     }
 
@@ -70,15 +69,27 @@
             return;
         }
         if(this.settings.layout===1){
-
+            this.container.innerHTML=''
+            this.imgList=image
+            if(image.length==2){
+                this.container.classList.add('album-puzzle-2')
+            }
+            for(var i=0;i<Math.min(image.length,6);i++){
+                var picContainer=document.createElement('div')
+                picContainer.className='album-item puzzle-album-item'
+                var picDom=document.createElement('img')
+                picDom.src=image[i]
+                picDom.onload=puzzleImgResize(this)
+                picContainer.appendChild(picDom)
+                this.container.appendChild(picContainer)
+            }
+            puzzleResize(this)
         }
         else{
             this.imgList=[]
             this.addImage(image)
         }
     };
-
-
 
     /**
      * Get doms of all images
@@ -87,8 +98,6 @@
     qbAlbumObj.prototype.getImageDomElements = function() {
         return this.container.getElementsByClassName('album-item')
     };
-
-
 
     /**
      * Add images to album
@@ -101,8 +110,13 @@
         }
         this.imgList=this.imgList.concat(image);
         if(this.settings.layout==1){
-            this.container.removeChildren();
-
+            if(this.imgList.length>6){
+                this.setImage(this.imgList.slice(0,6))
+            }
+            else{
+                this.setImage(this.imgList)
+            }
+            
         }
         else{
             if(this.settings.layout==2){
@@ -114,18 +128,21 @@
         }
     };
 
-
-
     /**
      * 移除相册中的图片
      * @param  {(HTMLElement|HTMLElement[])} image 需要移除的图片
      * @return {boolean} 是否全部移除成功
      */
     qbAlbumObj.prototype.removeImage = function (image) {
-
+        var imgContainerList=this.getImageDomElements();
+        var newImageList=[];
+        for(var i=0;i<imgContainerList.length;i++){
+            if(image.indexOf(imgContainerList[i])<0){
+                newImageList.push(imgContainerList[i].children[0].src);
+            }
+            this.setImage(newImageList);
+        }
     };
-
-
 
     /**
      * Set layout of the album
@@ -170,8 +187,6 @@
         }
         this.settings.layout=layout
     };
-
-
 
     /**
      * Get current Layout
@@ -237,11 +252,52 @@
     };
 
     //Private functions here
-    var puzzleSize=function(){
+    var puzzleResize=function(albumObj,isImgLoaded){
+        var sizes=puzzleGetSize(albumObj,albumObj.imgList.length)
+        var picContainers=albumObj.container.children;
+        for(var i=0;i<Math.min(albumObj.imgList.length,6);i++){
+            picContainers[i].style.height=sizes[i].height+'px'
+            picContainers[i].style.width=sizes[i].width+'px'
+            if(sizes[i].right){
+                picContainers[i].style.float='right'
+            }
+            if(isImgLoaded){
+                var img=picContainers[i].children[0]
+                if(img.originalHeight/img.originalWidth<sizes[i].height/sizes[i].width){
+                    img.style.width=''
+                    img.style.height='100%'
+                    img.style.left=(sizes[i].width-img.originalWidth*sizes[i].height/img.originalHeight)/2+'px'
+                    img.style.top='0px'
+                }
+                else{
+                    img.style.height=''
+                    img.style.width='100%'
+                    img.style.top=(sizes[i].height-img.originalHeight*sizes[i].width/img.originalWidth)/2+'px'
+                    img.style.left='0px'
+                }
+            }
+        }
+    }
+
+    var puzzleImgResize=function(albumObj){
+        var container=albumObj.container
+        albumObj.originalHeight=container.clientHeight
+        albumObj.originalWidth=container.clientWidth
+        if(albumObj.clientHeight/albumObj.clientWidth<container.clientHeight/container.clientWidth){
+            albumObj.container.style.height='100%'
+            albumObj.container.style.left=(container.clientWidth-albumObj.clientWidth)/2+'px'
+        }
+        else{
+            albumObj.container.style.width='100%'
+            albumObj.container.style.top=(container.clientHeight-albumObj.clientHeight)/2+'px'
+        }
+    }
+
+    var puzzleGetSize=function(albumObj){
         var sizes=[]
-        var height=this.container.clientHeight-0.5
-        var width=this.container.clientWidth-0.5
-        switch(this.photos.length){
+        var height=albumObj.container.clientHeight-0.5
+        var width=albumObj.container.clientWidth-0.5
+        switch(Math.min(albumObj.imgList.length,6)){
             case 1:sizes=[{height:height,width:width}];break;
             case 2:sizes=[{height:height,width:width/3*2},{height:height,width:width/3*2,right:true}];break;
             case 3:sizes=[{height:height,width:width-height/2},{height:height/2,width:height/2},{height:height/2,width:height/2}];break;
@@ -337,17 +393,6 @@
             }
         },40)
     }
-  
-
-    
-
-    /**
-     * Get bucketMinHeight
-     * @return {number}
-     */
-    qbAlbumObj.prototype.getBarrelHeightMin = function () {
-        return this.settings.bucketMinHeight
-    };
 
     if (typeof window.qbAlbum === 'undefined') {
         window.qbAlbum = new qbAlbum();

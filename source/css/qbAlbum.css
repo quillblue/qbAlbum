@@ -10,6 +10,28 @@
 	    clear: both;
 	}
 
+.puzzle-album-item{
+	position: relative;
+	overflow: hidden;
+	float:left;
+	box-sizing:border-box;
+}
+
+.puzzle-album-item img{
+	position: absolute;
+}
+
+.puzzle-album-2 .album-item {
+    position: absolute;
+}
+
+.puzzle-album-2 .album-item:last-child {
+    right: 0;
+    -webkit-clip-path: polygon(50% 0, 100% 0, 100% 100%, 0% 100%);
+    clip-path: url(plugin/clip.svg#trapezoid);
+}
+
+
 .waterfall-album{
 	display: flex;
 }
